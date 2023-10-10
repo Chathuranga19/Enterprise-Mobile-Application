@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 // User management model
 
-public class userManagementModel {
+public class UserManagementModel {
 
     @SerializedName("Nic") // Nic field serialization
     @Expose

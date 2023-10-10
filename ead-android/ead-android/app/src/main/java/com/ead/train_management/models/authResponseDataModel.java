@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 
 //Authentication response model
-public class authResponseDataModel {
+public class AuthResponseDataModel {
 
     // Use the '@SerializedName' annotation to specify the JSON key for the 'id' field.
     @SerializedName("id")

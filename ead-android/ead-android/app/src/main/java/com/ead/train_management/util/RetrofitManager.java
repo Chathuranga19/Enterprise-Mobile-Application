@@ -14,7 +14,7 @@ import java.io.IOException;
 /**
  * Http Interceptor
  */
-class JsonInterceptor implements Interceptor {
+class RestApiClient implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request originalRequest = chain.request();
@@ -26,13 +26,13 @@ class JsonInterceptor implements Interceptor {
 /**
  * Http Client init
  */
-public class RetrofitClient {
+public class RetrofitManager {
 
     private static Retrofit retrofit = null;
     private static final String BASE_URL = "http://10.0.2.2:44334/";
     public static Retrofit getClient(){
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .addInterceptor(new JsonInterceptor())
+                .addInterceptor(new RestApiClient())
                 .build();
 
         if(retrofit == null){

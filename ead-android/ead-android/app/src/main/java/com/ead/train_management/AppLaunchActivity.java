@@ -11,12 +11,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.ead.train_management.models.userAuthModel;
-import com.ead.train_management.models.authResponseDataModel;
-import com.ead.train_management.models.travelerHandlerModel;
+import com.ead.train_management.models.UserAuthModel;
+import com.ead.train_management.models.AuthResponseDataModel;
+import com.ead.train_management.models.TravelerHandlerModel;
 import com.ead.train_management.service.AuthService;
-import com.ead.train_management.util.DatabaseHelper;
-import com.ead.train_management.util.RetrofitClient;
+import com.ead.train_management.util.DBManager;
+import com.ead.train_management.util.RetrofitManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,10 +37,10 @@ public class AppLaunchActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.loginButton);
 
         // Initialize Retrofit service for user authentication
-        lgService = RetrofitClient.getClient().create(AuthService.class);
+        lgService = RetrofitManager.getClient().create(AuthService.class);
 
         // Initialize database helper
-        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        DBManager dbHelper = new DBManager(getApplicationContext());
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -51,26 +51,26 @@ public class AppLaunchActivity extends AppCompatActivity {
                     Toast.makeText(AppLaunchActivity.this, "Fill all details", Toast.LENGTH_SHORT).show();
                 } else {
                     // Create a user authentication model and populate it with user input
-                    userAuthModel loginRequest = new userAuthModel();
+                    UserAuthModel loginRequest = new UserAuthModel();
                     loginRequest.setNic(username.getText().toString());
                     loginRequest.setPassword(password.getText().toString());
 
                     // Make a Retrofit API call to log in the user
-                    Call<authResponseDataModel> call = lgService.Login(loginRequest);
-                    call.enqueue(new Callback<authResponseDataModel>() {
+                    Call<AuthResponseDataModel> call = lgService.Login(loginRequest);
+                    call.enqueue(new Callback<AuthResponseDataModel>() {
                         @Override
-                        public void onResponse(Call<authResponseDataModel> call, Response<authResponseDataModel> response) {
+                        public void onResponse(Call<AuthResponseDataModel> call, Response<AuthResponseDataModel> response) {
                             if (response.isSuccessful() && response.body() != null) {
-                                authResponseDataModel userResponse = response.body();
+                                AuthResponseDataModel userResponse = response.body();
                                 if (userResponse.getRole().equals("traveler")) {
                                     // If the user is a traveler, retrieve user profile
-                                    Call<travelerHandlerModel> data = lgService.getUserProfile(userResponse.getNic());
+                                    Call<TravelerHandlerModel> data = lgService.getUserProfile(userResponse.getNic());
 
-                                    data.enqueue(new Callback<travelerHandlerModel>() {
+                                    data.enqueue(new Callback<TravelerHandlerModel>() {
                                         @Override
-                                        public void onResponse(Call<travelerHandlerModel> call1, Response<travelerHandlerModel> response1) {
+                                        public void onResponse(Call<TravelerHandlerModel> call1, Response<TravelerHandlerModel> response1) {
                                             if (response1.isSuccessful() && response1.body() != null) {
-                                                travelerHandlerModel res = response1.body();
+                                                TravelerHandlerModel res = response1.body();
                                                 if (res.isAcc()) {
                                                     // If the account is active, insert user data into the database
                                                     ContentValues values = new ContentValues();
@@ -97,7 +97,7 @@ public class AppLaunchActivity extends AppCompatActivity {
                                         }
 
                                         @Override
-                                        public void onFailure(Call<travelerHandlerModel> call, Throwable t) {
+                                        public void onFailure(Call<TravelerHandlerModel> call, Throwable t) {
                                             // Display an error message if the API call fails
                                             Toast.makeText(AppLaunchActivity.this, "Error", Toast.LENGTH_SHORT).show();
                                         }
@@ -113,7 +113,7 @@ public class AppLaunchActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<authResponseDataModel> call, Throwable t) {
+                        public void onFailure(Call<AuthResponseDataModel> call, Throwable t) {
                             // Display an error message if the login request fails
                             Toast.makeText(AppLaunchActivity.this, "Failed to log", Toast.LENGTH_SHORT).show();
                         }

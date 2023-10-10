@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 // Model for viewing booking information.
 
-public class viewBookingModel {
+public class ViewBookingModel {
 
     @SerializedName("id")
     @Expose

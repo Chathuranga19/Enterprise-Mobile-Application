@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
  // Reservation handler model
 
-public class reservationHandlerModel {
+public class ReservationHandlerModel {
 
     // Use the '@SerializedName' annotation to specify the JSON key for the 'isCancelled' field.
     @SerializedName("isCancelled")

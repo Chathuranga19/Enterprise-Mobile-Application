@@ -15,11 +15,11 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.ead.train_management.models.reservationModel;
-import com.ead.train_management.models.travelModel;
+import com.ead.train_management.models.ReservationModel;
+import com.ead.train_management.models.TravelModel;
 import com.ead.train_management.service.ReservationService;
-import com.ead.train_management.util.DatabaseHelper;
-import com.ead.train_management.util.RetrofitClient;
+import com.ead.train_management.util.DBManager;
+import com.ead.train_management.util.RetrofitManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
@@ -29,12 +29,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ReservationUtilActivity extends AppCompatActivity {
+public class ReservationActivity extends AppCompatActivity {
 
     private ReservationService bgService; // Service for managing reservations
-    private String nic = ""; // User's NIC (National Identification Card) number
+    private String nic = ""; // User's NIC number
     private String uid = ""; // User's UID (User Identification) number
-    private DatabaseHelper dbHelper; // Helper class for managing SQLite database
+    private DBManager dbHelper; // Helper class for managing SQLite database
     private SQLiteDatabase db; // Database instance
     private Cursor cursor; // Cursor for database queries
     EditText name;
@@ -84,10 +84,10 @@ public class ReservationUtilActivity extends AppCompatActivity {
         addButton = findViewById(R.id.addButton);
 
         // Initialize ReservationService using Retrofit
-        bgService = RetrofitClient.getClient().create(ReservationService.class);
+        bgService = RetrofitManager.getClient().create(ReservationService.class);
 
-        // Initialize the DatabaseHelper and get a writable database instance
-        dbHelper = new DatabaseHelper(getApplicationContext());
+        // Initialize the DBManager and get a writable database instance
+        dbHelper = new DBManager(getApplicationContext());
         db = dbHelper.getWritableDatabase();
 
         // Define the columns to retrieve from the "users" table
@@ -115,31 +115,31 @@ public class ReservationUtilActivity extends AppCompatActivity {
         }
 
         // Create a Retrofit call to fetch train data
-        Call<List<travelModel>> data = bgService.getTrain();
+        Call<List<TravelModel>> data = bgService.getTrain();
 
         // Asynchronously handle the response from the server
-        data.enqueue(new Callback<List<travelModel>>() {
+        data.enqueue(new Callback<List<TravelModel>>() {
             @Override
-            public void onResponse(Call<List<travelModel>> call1, Response<List<travelModel>> response1) {
+            public void onResponse(Call<List<TravelModel>> call1, Response<List<TravelModel>> response1) {
                 if (response1.isSuccessful() && response1.body() != null) {
                     // If the response is successful and contains data
-                    List<travelModel> responseData = response1.body();
+                    List<TravelModel> responseData = response1.body();
                     List<String> dt = new ArrayList<>();
 
-                    for (travelModel d : responseData) {
+                    for (TravelModel d : responseData) {
                         dt.add(d.getTidc());
                     }
                     populateSpinner(dt);
                 } else {
                     // If there's an error in the response, show a toast message
-                    Toast.makeText(ReservationUtilActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ReservationActivity.this, "Error", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<List<travelModel>> call, Throwable t) {
+            public void onFailure(Call<List<TravelModel>> call, Throwable t) {
                 // If the network request fails, show a toast message
-                Toast.makeText(ReservationUtilActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ReservationActivity.this, "Error", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -148,13 +148,13 @@ public class ReservationUtilActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (name.getText().toString().equals("") && email.getText().toString().equals("") && phone.getText().toString().equals("")) {
                     // Check if required fields are empty and show a toast message
-                    Toast.makeText(ReservationUtilActivity.this, "Fill all details", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ReservationActivity.this, "Fill all details", Toast.LENGTH_SHORT).show();
                 } else {
                     String selectedValue = "";
                     if (spinner.getSelectedItem() != null) {
                         selectedValue = spinner.getSelectedItem().toString();
                     }
-                    reservationModel u = new reservationModel();
+                    ReservationModel u = new ReservationModel();
 
                     u.setRfid(nic);
                     u.setTid(uid);
@@ -176,16 +176,16 @@ public class ReservationUtilActivity extends AppCompatActivity {
                                 Intent intent = new Intent(getApplicationContext(), BookingListActivity.class);
                                 startActivity(intent);
                             } else {
-                                Log.e("Foundd-ReservationUtilActivity", "Error: " + response1.message());
+                                Log.e("Foundd-ReservationActivity", "Error: " + response1.message());
                                 // If there's an error in the response, show a toast message
-                                Toast.makeText(ReservationUtilActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ReservationActivity.this, "Error", Toast.LENGTH_SHORT).show();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<String> call, Throwable t) {
                             // If the network request fails, show a toast message
-                            Toast.makeText(ReservationUtilActivity.this, "Failed to Register", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ReservationActivity.this, "Failed to Register", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 // Travel model.
 
-public class travelModel {
+public class TravelModel {
 
     // Use the '@SerializedName' annotation to specify the JSON key for the 'id' field.
     @SerializedName("id")

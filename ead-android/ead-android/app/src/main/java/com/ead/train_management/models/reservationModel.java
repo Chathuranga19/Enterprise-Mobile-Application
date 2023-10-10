@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
   // Reservation model
 
-public class reservationModel {
+public class ReservationModel {
 
      // Use the '@SerializedName' annotation to specify the JSON key for the 'referenceId' field.
      @SerializedName("referenceId")
@@ -28,8 +28,8 @@ public class reservationModel {
      @Expose
      private String  phone;
 
-     // Use the '@SerializedName' annotation to specify the JSON key for the 'travelModel' field.
-     @SerializedName("travelModel")
+     // Use the '@SerializedName' annotation to specify the JSON key for the 'TravelModel' field.
+     @SerializedName("TravelModel")
      @Expose
      private String  train;
 
@@ -93,12 +93,12 @@ public class reservationModel {
           this.phone = phone;
      }
 
-     // Getter method for accessing the 'travelModel' field.
+     // Getter method for accessing the 'TravelModel' field.
      public String getTrain() {
           return train;
      }
 
-     // Setter method to update the 'travelModel' field.
+     // Setter method to update the 'TravelModel' field.
      public void setTrain(String train) {
           this.train = train;
      }

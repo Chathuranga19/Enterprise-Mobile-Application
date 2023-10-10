@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 // User Authentication model
-public class userAuthModel {
+public class UserAuthModel {
     @SerializedName("Nic") // Nic field serialization
     @Expose
     private String nic;
@@ -14,11 +14,11 @@ public class userAuthModel {
     private String password;
 
     // Default constructor
-    public userAuthModel() {
+    public UserAuthModel() {
     }
 
     // Constructor with parameters
-    public userAuthModel(String nic, String password) {
+    public UserAuthModel(String nic, String password) {
         this.nic = nic;
         this.password = password;
     }

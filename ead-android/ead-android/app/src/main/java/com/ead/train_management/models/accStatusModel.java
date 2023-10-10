@@ -3,8 +3,8 @@ package com.ead.train_management.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-// 'accStatusModel' to represent account status.
-public class accStatusModel {
+// 'AccStatusModel' to represent account status.
+public class AccStatusModel {
     // Use the '@SerializedName' annotation to specify the JSON key for this field.
     @SerializedName("AccStatus")
     @Expose

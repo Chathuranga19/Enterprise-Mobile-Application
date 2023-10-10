@@ -1,10 +1,10 @@
 package com.ead.train_management.service;
 
-import com.ead.train_management.models.accStatusModel;
-import com.ead.train_management.models.userAuthModel;
-import com.ead.train_management.models.authResponseDataModel;
-import com.ead.train_management.models.userManagementModel;
-import com.ead.train_management.models.travelerHandlerModel;
+import com.ead.train_management.models.AccStatusModel;
+import com.ead.train_management.models.TravelerHandlerModel;
+import com.ead.train_management.models.UserAuthModel;
+import com.ead.train_management.models.AuthResponseDataModel;
+import com.ead.train_management.models.UserManagementModel;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -20,23 +20,23 @@ public interface AuthService {
 
     // Login service
     @POST("Login")
-    Call<authResponseDataModel> Login(@Body userAuthModel lg);
+    Call<AuthResponseDataModel> Login(@Body UserAuthModel lg);
 
     // Get user profile service
     @GET("api/TravelerProfile/{id}")
-    Call<travelerHandlerModel> getUserProfile(@Path("id") String nic);
+    Call<TravelerHandlerModel> getUserProfile(@Path("id") String nic);
 
     // Register new user service
     @POST("api/TravelerProfile")
-    Call<travelerHandlerModel> Reg(@Body userManagementModel u);
+    Call<TravelerHandlerModel> Reg(@Body UserManagementModel u);
 
     // Update user profile service
     @POST("api/TravelerProfile/") 
-    Call<travelerHandlerModel> Update(@Body travelerHandlerModel u);
+    Call<TravelerHandlerModel> Update(@Body TravelerHandlerModel u);
 
     // Disable user account service
     @PUT("api/TravelerProfile/{id}")
-    Call<travelerHandlerModel> Dis(@Path("id") String nic, @Body accStatusModel db);
+    Call<TravelerHandlerModel> Dis(@Path("id") String nic, @Body AccStatusModel db);
 }
 
 

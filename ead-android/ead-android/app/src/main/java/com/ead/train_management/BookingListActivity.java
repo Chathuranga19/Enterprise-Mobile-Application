@@ -11,11 +11,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.ead.train_management.models.viewBookingModel;
+import com.ead.train_management.models.ViewBookingModel;
 import com.ead.train_management.service.ReservationService;
-import com.ead.train_management.util.DatabaseHelper;
-import com.ead.train_management.util.MyAdapter;
-import com.ead.train_management.util.RetrofitClient;
+import com.ead.train_management.util.DBManager;
+import com.ead.train_management.util.BookingListAdapter;
+import com.ead.train_management.util.RetrofitManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
@@ -28,8 +28,8 @@ import retrofit2.Response;
 public class BookingListActivity extends AppCompatActivity {
     private ReservationService bgService; // Service for managing reservations
     private String nic = ""; // User's NIC number
-    private String uid = ""; // User's UID number
-    private DatabaseHelper dbHelper; // Helper class for managing SQLite database
+    private String uid = ""; // User's UID (User Identification) number
+    private DBManager dbHelper; // Helper class for managing SQLite database
     private SQLiteDatabase db; // Database instance
     private Cursor cursor; // Cursor for database queries
 
@@ -47,8 +47,8 @@ public class BookingListActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.book:
-                    // Navigate to ReservationUtilActivity
-                    startActivity(new Intent(getApplicationContext(), ReservationUtilActivity.class));
+                    // Navigate to ReservationActivity
+                    startActivity(new Intent(getApplicationContext(), ReservationActivity.class));
                     overridePendingTransition(0, 0); // Apply transition animation
                     return true;
                 case R.id.home:
@@ -63,10 +63,10 @@ public class BookingListActivity extends AppCompatActivity {
         });
 
         // Initialize the ReservationService using Retrofit
-        bgService = RetrofitClient.getClient().create(ReservationService.class);
+        bgService = RetrofitManager.getClient().create(ReservationService.class);
 
-        // Initialize the DatabaseHelper and get a writable database instance
-        dbHelper = new DatabaseHelper(getApplicationContext());
+        // Initialize the DBManager and get a writable database instance
+        dbHelper = new DBManager(getApplicationContext());
         db = dbHelper.getWritableDatabase();
 
         // Define the columns to retrieve from the "users" table
@@ -98,19 +98,19 @@ public class BookingListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Create a Retrofit call to fetch booking data for the user's NIC
-        Call<List<viewBookingModel>> data = bgService.getBooking(nic);
+        Call<List<ViewBookingModel>> data = bgService.getBooking(nic);
 
         // Asynchronously handle the response from the server
-        data.enqueue(new Callback<List<viewBookingModel>>() {
+        data.enqueue(new Callback<List<ViewBookingModel>>() {
             @Override
-            public void onResponse(Call<List<viewBookingModel>> call1, Response<List<viewBookingModel>> response1) {
+            public void onResponse(Call<List<ViewBookingModel>> call1, Response<List<ViewBookingModel>> response1) {
                 if (response1.isSuccessful() && response1.body() != null) {
                     // If the response is successful and contains data
-                    List<viewBookingModel> dataList = response1.body();
+                    List<ViewBookingModel> dataList = response1.body();
                     // Remove bookings marked as "cc"
-                    dataList.removeIf(viewBookingModel::isCc);
+                    dataList.removeIf(ViewBookingModel::isCc);
                     // Create and set the adapter for the RecyclerView
-                    MyAdapter adapter = new MyAdapter(dataList);
+                    BookingListAdapter adapter = new BookingListAdapter(dataList);
                     recyclerView.setAdapter(adapter);
                 } else {
                     // If there's an error in the response, show a toast message
@@ -119,7 +119,7 @@ public class BookingListActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<viewBookingModel>> call, Throwable t) {
+            public void onFailure(Call<List<ViewBookingModel>> call, Throwable t) {
                 // If the network request fails, show a toast message
                 Toast.makeText(BookingListActivity.this, "Error", Toast.LENGTH_SHORT).show();
             }

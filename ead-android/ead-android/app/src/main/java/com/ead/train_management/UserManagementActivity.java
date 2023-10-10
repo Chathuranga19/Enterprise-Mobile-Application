@@ -12,11 +12,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.ead.train_management.models.accStatusModel;
-import com.ead.train_management.models.travelerHandlerModel;
+import com.ead.train_management.models.AccStatusModel;
+import com.ead.train_management.models.TravelerHandlerModel;
 import com.ead.train_management.service.AuthService;
-import com.ead.train_management.util.DatabaseHelper;
-import com.ead.train_management.util.RetrofitClient;
+import com.ead.train_management.util.DBManager;
+import com.ead.train_management.util.RetrofitManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import retrofit2.Call;
@@ -27,9 +27,9 @@ import retrofit2.Response;
 public class UserManagementActivity extends AppCompatActivity {
 
     private AuthService lgService; // Service for user authentication
-    private String nic = ""; // User's NIC (National Identification Card) number
+    private String nic = ""; // User's NIC number
     private String uid = ""; // User's UID (User Identification) number
-    private DatabaseHelper dbHelper; // Helper class for managing SQLite database
+    private DBManager dbHelper; // Helper class for managing SQLite database
     private SQLiteDatabase db; // Database instance
     private Cursor cursor; // Cursor for database queries
     EditText fname;
@@ -54,8 +54,8 @@ public class UserManagementActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.book:
-                    // Navigate to ReservationUtilActivity
-                    startActivity(new Intent(getApplicationContext(), ReservationUtilActivity.class));
+                    // Navigate to ReservationActivity
+                    startActivity(new Intent(getApplicationContext(), ReservationActivity.class));
                     overridePendingTransition(0, 0); // Apply transition animation
                     return true;
                 case R.id.home:
@@ -79,10 +79,10 @@ public class UserManagementActivity extends AppCompatActivity {
         lgButton = findViewById(R.id.lgButton);
 
         // Initialize AuthService using Retrofit
-        lgService = RetrofitClient.getClient().create(AuthService.class);
+        lgService = RetrofitManager.getClient().create(AuthService.class);
 
-        // Initialize the DatabaseHelper and get a writable database instance
-        dbHelper = new DatabaseHelper(getApplicationContext());
+        // Initialize the DBManager and get a writable database instance
+        dbHelper = new DBManager(getApplicationContext());
         db = dbHelper.getWritableDatabase();
 
         // Define the columns to retrieve from the "users" table
@@ -110,15 +110,15 @@ public class UserManagementActivity extends AppCompatActivity {
         }
 
         // Create a Retrofit call to fetch user profile data
-        Call<travelerHandlerModel> data = lgService.getUserProfile(nic);
+        Call<TravelerHandlerModel> data = lgService.getUserProfile(nic);
 
         // Asynchronously handle the response from the server
-        data.enqueue(new Callback<travelerHandlerModel>() {
+        data.enqueue(new Callback<TravelerHandlerModel>() {
             @Override
-            public void onResponse(Call<travelerHandlerModel> call1, Response<travelerHandlerModel> response1) {
+            public void onResponse(Call<TravelerHandlerModel> call1, Response<TravelerHandlerModel> response1) {
                 if (response1.isSuccessful() && response1.body() != null) {
                     // If the response is successful and contains data
-                    travelerHandlerModel res = response1.body();
+                    TravelerHandlerModel res = response1.body();
                     // Populate UI elements with user profile data
                     fname.setText(res.getFname());
                     lname.setText(res.getLname());
@@ -131,7 +131,7 @@ public class UserManagementActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<travelerHandlerModel> call, Throwable t) {
+            public void onFailure(Call<TravelerHandlerModel> call, Throwable t) {
                 // If the network request fails, show a toast message
                 Toast.makeText(UserManagementActivity.this, "Error", Toast.LENGTH_SHORT).show();
             }
@@ -144,8 +144,8 @@ public class UserManagementActivity extends AppCompatActivity {
                     // Check if required fields are empty and show a toast message
                     Toast.makeText(UserManagementActivity.this, "Fill all details", Toast.LENGTH_SHORT).show();
                 } else {
-                    // Create a travelerHandlerModel object with updated user data
-                    travelerHandlerModel u = new travelerHandlerModel();
+                    // Create a TravelerHandlerModel object with updated user data
+                    TravelerHandlerModel u = new TravelerHandlerModel();
                     u.setAcc(true);
                     u.setNic(nic);
                     u.setPhone(phone.getText().toString());
@@ -154,12 +154,12 @@ public class UserManagementActivity extends AppCompatActivity {
                     u.setDate(date.getText().toString());
                     u.setId(uid);
                     // Create a Retrofit call to update user profile
-                    Call<travelerHandlerModel> call = lgService.Update(u);
+                    Call<TravelerHandlerModel> call = lgService.Update(u);
 
                     // Asynchronously handle the response from the server
-                    call.enqueue(new Callback<travelerHandlerModel>() {
+                    call.enqueue(new Callback<TravelerHandlerModel>() {
                         @Override
-                        public void onResponse(Call<travelerHandlerModel> call, Response<travelerHandlerModel> response) {
+                        public void onResponse(Call<TravelerHandlerModel> call, Response<TravelerHandlerModel> response) {
                             if (response.isSuccessful() && response.body() != null) {
                                 // If the response is successful, navigate to UserManagementActivity
                                 Intent intent = new Intent(getApplicationContext(), UserManagementActivity.class);
@@ -171,7 +171,7 @@ public class UserManagementActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<travelerHandlerModel> call, Throwable t) {
+                        public void onFailure(Call<TravelerHandlerModel> call, Throwable t) {
                             // If the network request fails, show a toast message
                             Toast.makeText(UserManagementActivity.this, "Failed to Register", Toast.LENGTH_SHORT).show();
                         }
@@ -193,15 +193,15 @@ public class UserManagementActivity extends AppCompatActivity {
 
     // Handle the disable button click
     public void Disable(View view) {
-        accStatusModel d = new accStatusModel();
+        AccStatusModel d = new AccStatusModel();
         d.setAcc(false);
         // Create a Retrofit call to disable the user account
-        Call<travelerHandlerModel> data = lgService.Dis(nic, d);
+        Call<TravelerHandlerModel> data = lgService.Dis(nic, d);
 
         // Asynchronously handle the response from the server
-        data.enqueue(new Callback<travelerHandlerModel>() {
+        data.enqueue(new Callback<TravelerHandlerModel>() {
             @Override
-            public void onResponse(Call<travelerHandlerModel> call1, Response<travelerHandlerModel> response1) {
+            public void onResponse(Call<TravelerHandlerModel> call1, Response<TravelerHandlerModel> response1) {
                 if (response1.isSuccessful() && response1.body() != null) {
                     // If the response is successful, log out the user
                     LogOut(view);
@@ -212,7 +212,7 @@ public class UserManagementActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<travelerHandlerModel> call, Throwable t) {
+            public void onFailure(Call<TravelerHandlerModel> call, Throwable t) {
                 // If the network request fails, show a toast message
                 Toast.makeText(UserManagementActivity.this, "Error", Toast.LENGTH_SHORT).show();
             }

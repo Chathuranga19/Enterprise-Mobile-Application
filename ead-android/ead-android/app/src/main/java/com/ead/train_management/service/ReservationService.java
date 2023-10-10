@@ -1,9 +1,9 @@
 package com.ead.train_management.service;
 
-import com.ead.train_management.models.reservationModel;
-import com.ead.train_management.models.reservationHandlerModel;
-import com.ead.train_management.models.travelModel;
-import com.ead.train_management.models.viewBookingModel;
+import com.ead.train_management.models.ReservationModel;
+import com.ead.train_management.models.ReservationHandlerModel;
+import com.ead.train_management.models.TravelModel;
+import com.ead.train_management.models.ViewBookingModel;
 
 import java.util.List;
 
@@ -21,17 +21,17 @@ public interface ReservationService {
 
     // Get booking details for a user
     @GET("api/Reservation/{id}")
-    Call<List<viewBookingModel>> getBooking(@Path("id") String nic);
+    Call<List<ViewBookingModel>> getBooking(@Path("id") String nic);
 
     // Create a new booking
     @POST("api/Reservation")
-    Call<String> createBooking(@Body reservationModel u);
+    Call<String> createBooking(@Body ReservationModel u);
 
     // Remove a booking
     @PUT("api/Reservation/{id}")
-    Call<String> removeBooking(@Path("id") String id ,@Body reservationHandlerModel db);
+    Call<String> removeBooking(@Path("id") String id ,@Body ReservationHandlerModel db);
 
     // Get list of available trains
     @GET("api/Train")
-    Call<List<travelModel>> getTrain();
+    Call<List<TravelModel>> getTrain();
 }

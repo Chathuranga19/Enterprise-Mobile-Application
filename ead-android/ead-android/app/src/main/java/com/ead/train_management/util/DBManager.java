@@ -7,8 +7,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 /**
  * Data Base Helper class
  */
-public class DatabaseHelper extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME = "travelModel.db";
+public class DBManager extends SQLiteOpenHelper {
+    private static final String DATABASE_NAME = "TravelModel.db";
     private static final int DATABASE_VERSION = 1;
 
     // Define your table and column names
@@ -17,7 +17,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // SQL statement to create the users table
     private static final String CREATE_TABLE_USERS = "CREATE TABLE users ( _id INTEGER PRIMARY KEY AUTOINCREMENT,nic TEXT,uid TEXT)";
 
-    public DatabaseHelper(Context context) {
+    public DBManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
