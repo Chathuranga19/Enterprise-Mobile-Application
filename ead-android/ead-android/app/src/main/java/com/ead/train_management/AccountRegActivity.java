@@ -20,34 +20,34 @@ import retrofit2.Response;
 
 public class AccountRegActivity extends AppCompatActivity {
 
-    private AuthService lgService;
-    EditText nic;
-    EditText password;
-    EditText fname;
-    EditText lname;
-    EditText phone;
-    Button regButton;
+    private AuthService authService; // Service for user authentication
+    EditText inputNIC; // User input for NIC
+    EditText inputPassword; // User input for password
+    EditText inputFirstName; // User input for first name
+    EditText inputLastName; // User input for last name
+    EditText inputPhone; // User input for phone
+    Button registerAction; // Button to trigger registration
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        nic = findViewById(R.id.nic1);
-        password = findViewById(R.id.password1);
-        fname = findViewById(R.id.fname1);
-        lname = findViewById(R.id.lname1);
-        phone = findViewById(R.id.phone1);
-        regButton = findViewById(R.id.regButton);
+        inputNIC = findViewById(R.id.nic1);
+        inputPassword = findViewById(R.id.password1);
+        inputFirstName = findViewById(R.id.fname1);
+        inputLastName = findViewById(R.id.lname1);
+        inputPhone = findViewById(R.id.phone1);
+        registerAction = findViewById(R.id.regButton);
 
         // Initialize Retrofit service for user authentication
-        lgService = RetrofitManager.getClient().create(AuthService.class);
+        authService = RetrofitManager.getClient().create(AuthService.class);
 
-        regButton.setOnClickListener(new View.OnClickListener() {
+        registerAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (nic.getText().toString().equals("") && password.getText().toString().equals("")
-                        && fname.getText().toString().equals("") && lname.getText().toString().equals("")
-                        && phone.getText().toString().equals("")) {
+                if (inputNIC.getText().toString().equals("") && inputPassword.getText().toString().equals("")
+                        && inputFirstName.getText().toString().equals("") && inputLastName.getText().toString().equals("")
+                        && inputPhone.getText().toString().equals("")) {
                     // Display a message when all details are not filled
                     Toast.makeText(AccountRegActivity.this, "Fill all details", Toast.LENGTH_SHORT).show();
                 } else {
@@ -55,16 +55,16 @@ public class AccountRegActivity extends AppCompatActivity {
                     UserManagementModel u = new UserManagementModel();
                     UserManagementModel.UserInfo ui = u.new UserInfo();
                     u.setAcc(true);
-                    u.setNic(nic.getText().toString());
-                    u.setPhone(phone.getText().toString());
-                    u.setFname(fname.getText().toString());
-                    u.setLname(lname.getText().toString());
-                    ui.setPassword(password.getText().toString());
+                    u.setNic(inputNIC.getText().toString());
+                    u.setPhone(inputPhone.getText().toString());
+                    u.setFname(inputFirstName.getText().toString());
+                    u.setLname(inputLastName.getText().toString());
+                    ui.setPassword(inputPassword.getText().toString());
                     ui.setRole("traveler");
                     u.setData(ui);
 
                     // Make a Retrofit API call to register the user
-                    Call<TravelerHandlerModel> call = lgService.Reg(u);
+                    Call<TravelerHandlerModel> call = authService.Reg(u);
                     call.enqueue(new Callback<TravelerHandlerModel>() {
                         @Override
                         public void onResponse(Call<TravelerHandlerModel> call, Response<TravelerHandlerModel> response) {

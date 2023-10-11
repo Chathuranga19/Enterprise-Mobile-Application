@@ -26,12 +26,12 @@ import retrofit2.Response;
 @SuppressWarnings("deprecation")
 public class UserManagementActivity extends AppCompatActivity {
 
-    private AuthService lgService; // Service for user authentication
-    private String nic = ""; // User's NIC number
-    private String uid = ""; // User's UID (User Identification) number
-    private DBManager dbHelper; // Helper class for managing SQLite database
-    private SQLiteDatabase db; // Database instance
-    private Cursor cursor; // Cursor for database queries
+    private AuthService authService; // Service for user authentication
+    private String userNIC = ""; // User's NIC number
+    private String userID = ""; // User's UID (User Identification) number
+    private DBManager dbManager; // Helper class for managing SQLite database
+    private SQLiteDatabase database; // Database instance
+    private Cursor dbCursor; // Cursor for database queries
     EditText fname;
     EditText lname;
     EditText phone;
@@ -79,11 +79,11 @@ public class UserManagementActivity extends AppCompatActivity {
         lgButton = findViewById(R.id.lgButton);
 
         // Initialize AuthService using Retrofit
-        lgService = RetrofitManager.getClient().create(AuthService.class);
+        authService = RetrofitManager.getClient().create(AuthService.class);
 
         // Initialize the DBManager and get a writable database instance
-        dbHelper = new DBManager(getApplicationContext());
-        db = dbHelper.getWritableDatabase();
+        dbManager = new DBManager(getApplicationContext());
+        database = dbManager.getWritableDatabase();
 
         // Define the columns to retrieve from the "users" table
         String[] projection = {
@@ -92,7 +92,7 @@ public class UserManagementActivity extends AppCompatActivity {
         };
 
         // Query the database to retrieve user information
-        cursor = db.query(
+        dbCursor = database.query(
                 "users", // Table name
                 projection, // Columns to retrieve
                 null,
@@ -103,14 +103,14 @@ public class UserManagementActivity extends AppCompatActivity {
         );
 
         // Check if there are results in the cursor
-        if (cursor.moveToFirst()) {
+        if (dbCursor.moveToFirst()) {
             // Retrieve NIC and UID values from the cursor
-            nic = cursor.getString(cursor.getColumnIndex("nic"));
-            uid = cursor.getString(cursor.getColumnIndex("uid"));
+            userNIC = dbCursor.getString(dbCursor.getColumnIndex("nic"));
+            userID = dbCursor.getString(dbCursor.getColumnIndex("uid"));
         }
 
         // Create a Retrofit call to fetch user profile data
-        Call<TravelerHandlerModel> data = lgService.getUserProfile(nic);
+        Call<TravelerHandlerModel> data = authService.getUserProfile(userNIC);
 
         // Asynchronously handle the response from the server
         data.enqueue(new Callback<TravelerHandlerModel>() {
@@ -147,14 +147,14 @@ public class UserManagementActivity extends AppCompatActivity {
                     // Create a TravelerHandlerModel object with updated user data
                     TravelerHandlerModel u = new TravelerHandlerModel();
                     u.setAcc(true);
-                    u.setNic(nic);
+                    u.setNic(userNIC);
                     u.setPhone(phone.getText().toString());
                     u.setFname(fname.getText().toString());
                     u.setLname(lname.getText().toString());
                     u.setDate(date.getText().toString());
-                    u.setId(uid);
+                    u.setId(userID);
                     // Create a Retrofit call to update user profile
-                    Call<TravelerHandlerModel> call = lgService.Update(u);
+                    Call<TravelerHandlerModel> call = authService.Update(u);
 
                     // Asynchronously handle the response from the server
                     call.enqueue(new Callback<TravelerHandlerModel>() {
@@ -184,9 +184,9 @@ public class UserManagementActivity extends AppCompatActivity {
     // Handle the logout button click
     public void LogOut(View view) {
         // Delete user data from the database and navigate to AppLaunchActivity
-        int deletedRows = db.delete("users", null, null);
-        cursor.close();
-        dbHelper.close();
+        int deletedRows = database.delete("users", null, null);
+        dbCursor.close();
+        dbManager.close();
         Intent intent = new Intent(this, AppLaunchActivity.class);
         startActivity(intent);
     }
@@ -196,7 +196,7 @@ public class UserManagementActivity extends AppCompatActivity {
         AccStatusModel d = new AccStatusModel();
         d.setAcc(false);
         // Create a Retrofit call to disable the user account
-        Call<TravelerHandlerModel> data = lgService.Dis(nic, d);
+        Call<TravelerHandlerModel> data = authService.Dis(userNIC, d);
 
         // Asynchronously handle the response from the server
         data.enqueue(new Callback<TravelerHandlerModel>() {

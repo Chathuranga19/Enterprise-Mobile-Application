@@ -31,12 +31,12 @@ import retrofit2.Response;
 
 public class ReservationActivity extends AppCompatActivity {
 
-    private ReservationService bgService; // Service for managing reservations
-    private String nic = ""; // User's NIC number
-    private String uid = ""; // User's UID (User Identification) number
-    private DBManager dbHelper; // Helper class for managing SQLite database
-    private SQLiteDatabase db; // Database instance
-    private Cursor cursor; // Cursor for database queries
+    private ReservationService reservationService; // Service for managing reservations
+    private String userNIC = ""; // User's NIC number
+    private String userID = ""; // User's ID number
+    private DBManager dbManager; // Helper class for managing SQLite database
+    private SQLiteDatabase database; // Database instance
+    private Cursor dbCursor; // Cursor for database queries
     EditText name;
     EditText email;
     EditText num;
@@ -84,11 +84,11 @@ public class ReservationActivity extends AppCompatActivity {
         addButton = findViewById(R.id.addButton);
 
         // Initialize ReservationService using Retrofit
-        bgService = RetrofitManager.getClient().create(ReservationService.class);
+        reservationService = RetrofitManager.getClient().create(ReservationService.class);
 
         // Initialize the DBManager and get a writable database instance
-        dbHelper = new DBManager(getApplicationContext());
-        db = dbHelper.getWritableDatabase();
+        dbManager = new DBManager(getApplicationContext());
+        database = dbManager.getWritableDatabase();
 
         // Define the columns to retrieve from the "users" table
         String[] projection = {
@@ -97,7 +97,7 @@ public class ReservationActivity extends AppCompatActivity {
         };
 
         // Query the database to retrieve user information
-        cursor = db.query(
+        dbCursor = database.query(
                 "users", // Table name
                 projection, // Columns to retrieve
                 null,
@@ -108,14 +108,14 @@ public class ReservationActivity extends AppCompatActivity {
         );
 
         // Check if there are results in the cursor
-        if (cursor.moveToFirst()) {
+        if (dbCursor.moveToFirst()) {
             // Retrieve NIC and UID values from the cursor
-            nic = cursor.getString(cursor.getColumnIndex("nic"));
-            uid = cursor.getString(cursor.getColumnIndex("uid"));
+            userNIC = dbCursor.getString(dbCursor.getColumnIndex("nic"));
+            userID = dbCursor.getString(dbCursor.getColumnIndex("uid"));
         }
 
         // Create a Retrofit call to fetch train data
-        Call<List<TravelModel>> data = bgService.getTrain();
+        Call<List<TravelModel>> data = reservationService.getTrain();
 
         // Asynchronously handle the response from the server
         data.enqueue(new Callback<List<TravelModel>>() {
@@ -127,7 +127,12 @@ public class ReservationActivity extends AppCompatActivity {
                     List<String> dt = new ArrayList<>();
 
                     for (TravelModel d : responseData) {
-                        dt.add(d.getTidc());
+                        dt.add(d.trainIDFetcher());
+                    }
+
+                    // Test output
+                    for (String item : dt) {
+                        Log.e("ObjTest", item);
                     }
                     populateSpinner(dt);
                 } else {
@@ -156,16 +161,15 @@ public class ReservationActivity extends AppCompatActivity {
                     }
                     ReservationModel u = new ReservationModel();
 
-                    u.setRfid(nic);
-                    u.setTid(uid);
+                    u.setRfid(userNIC);
+                    u.setTid(userID);
                     u.setStatus(false);
                     u.setTrain(selectedValue);
-                    u.setDate("2023-10-15");
                     u.setPhone(phone.getText().toString());
                     u.setEmail(email.getText().toString());
                     u.setName(name.getText().toString());
                     u.setPassno(Integer.parseInt(num.getText().toString()));
-                    Call<String> call = bgService.createBooking(u);
+                    Call<String> call = reservationService.createBooking(u);
 
                     // Asynchronously handle the response from the server
                     call.enqueue(new Callback<String>() {

@@ -23,40 +23,40 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AppLaunchActivity extends AppCompatActivity {
-    private AuthService lgService;
-    EditText username;
-    EditText password;
-    Button loginButton;
+    private AuthService authService; // Service for user authentication
+    EditText inputUsername; // User input for username
+    EditText inputPassword; // User input for password
+    Button signinAction; // Button to trigger login
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        username = findViewById(R.id.username);
-        password = findViewById(R.id.password);
-        loginButton = findViewById(R.id.loginButton);
+        inputUsername = findViewById(R.id.username);
+        inputPassword = findViewById(R.id.password);
+        signinAction = findViewById(R.id.loginButton);
 
         // Initialize Retrofit service for user authentication
-        lgService = RetrofitManager.getClient().create(AuthService.class);
+        authService = RetrofitManager.getClient().create(AuthService.class);
 
         // Initialize database helper
-        DBManager dbHelper = new DBManager(getApplicationContext());
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        DBManager databaseManager = new DBManager(getApplicationContext());
+        SQLiteDatabase db = databaseManager.getWritableDatabase();
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
+        signinAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (username.getText().toString().equals("") && password.getText().toString().equals("")) {
+                if (inputUsername.getText().toString().equals("") && inputPassword.getText().toString().equals("")) {
                     // Display a message when username and password are not filled
                     Toast.makeText(AppLaunchActivity.this, "Fill all details", Toast.LENGTH_SHORT).show();
                 } else {
                     // Create a user authentication model and populate it with user input
                     UserAuthModel loginRequest = new UserAuthModel();
-                    loginRequest.setNic(username.getText().toString());
-                    loginRequest.setPassword(password.getText().toString());
+                    loginRequest.setNic(inputUsername.getText().toString());
+                    loginRequest.setPassword(inputPassword.getText().toString());
 
                     // Make a Retrofit API call to log in the user
-                    Call<AuthResponseDataModel> call = lgService.Login(loginRequest);
+                    Call<AuthResponseDataModel> call = authService.Login(loginRequest);
                     call.enqueue(new Callback<AuthResponseDataModel>() {
                         @Override
                         public void onResponse(Call<AuthResponseDataModel> call, Response<AuthResponseDataModel> response) {
@@ -64,7 +64,7 @@ public class AppLaunchActivity extends AppCompatActivity {
                                 AuthResponseDataModel userResponse = response.body();
                                 if (userResponse.getRole().equals("traveler")) {
                                     // If the user is a traveler, retrieve user profile
-                                    Call<TravelerHandlerModel> data = lgService.getUserProfile(userResponse.getNic());
+                                    Call<TravelerHandlerModel> data = authService.getUserProfile(userResponse.getNic());
 
                                     data.enqueue(new Callback<TravelerHandlerModel>() {
                                         @Override

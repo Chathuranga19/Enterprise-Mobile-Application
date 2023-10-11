@@ -10,15 +10,15 @@ public class TravelModel {
     // Use the '@SerializedName' annotation to specify the JSON key for the 'id' field.
     @SerializedName("id")
     @Expose
-    private String tidc;
+    private String trainID;
 
     // Getter method for accessing the 'id' field.
-    public String getTidc() {
-        return tidc;
+    public String trainIDFetcher() {
+        return trainID;
     }
 
     // Setter method to update the 'id' field.
-    public void setTidc(String tidc) {
-        this.tidc = tidc;
+    public void TrainIDAllocator(String trainID) {
+        this.trainID = trainID;
     }
 }

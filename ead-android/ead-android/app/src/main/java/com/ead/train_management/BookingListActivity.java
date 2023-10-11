@@ -26,12 +26,12 @@ import retrofit2.Response;
 
 @SuppressWarnings("deprecation")
 public class BookingListActivity extends AppCompatActivity {
-    private ReservationService bgService; // Service for managing reservations
-    private String nic = ""; // User's NIC number
-    private String uid = ""; // User's UID (User Identification) number
-    private DBManager dbHelper; // Helper class for managing SQLite database
-    private SQLiteDatabase db; // Database instance
-    private Cursor cursor; // Cursor for database queries
+    private ReservationService reservationService; // Service for managing reservations
+    private String userNIC = ""; // User's NIC number
+    private String userID = ""; // User's UID (User Identification) number
+    private DBManager dbManager; // Helper class for managing SQLite database
+    private SQLiteDatabase database; // Database instance
+    private Cursor dbCursor; // Cursor for database queries
 
     @SuppressLint({"NonConstantResourceId", "Range"})
     @Override
@@ -63,11 +63,11 @@ public class BookingListActivity extends AppCompatActivity {
         });
 
         // Initialize the ReservationService using Retrofit
-        bgService = RetrofitManager.getClient().create(ReservationService.class);
+        reservationService = RetrofitManager.getClient().create(ReservationService.class);
 
         // Initialize the DBManager and get a writable database instance
-        dbHelper = new DBManager(getApplicationContext());
-        db = dbHelper.getWritableDatabase();
+        dbManager = new DBManager(getApplicationContext());
+        database = dbManager.getWritableDatabase();
 
         // Define the columns to retrieve from the "users" table
         String[] projection = {
@@ -76,7 +76,7 @@ public class BookingListActivity extends AppCompatActivity {
         };
 
         // Query the database to retrieve user information
-        cursor = db.query(
+        dbCursor = database.query(
                 "users", // Table name
                 projection, // Columns to retrieve
                 null,
@@ -87,10 +87,10 @@ public class BookingListActivity extends AppCompatActivity {
         );
 
         // Check if there are results in the cursor
-        if (cursor.moveToFirst()) {
+        if (dbCursor.moveToFirst()) {
             // Retrieve NIC and UID values from the cursor
-            nic = cursor.getString(cursor.getColumnIndex("nic"));
-            uid = cursor.getString(cursor.getColumnIndex("uid"));
+            userNIC = dbCursor.getString(dbCursor.getColumnIndex("nic"));
+            userID = dbCursor.getString(dbCursor.getColumnIndex("uid"));
         }
 
         // Initialize the RecyclerView for displaying booking data
@@ -98,7 +98,7 @@ public class BookingListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Create a Retrofit call to fetch booking data for the user's NIC
-        Call<List<ViewBookingModel>> data = bgService.getBooking(nic);
+        Call<List<ViewBookingModel>> data = reservationService.getBooking(userNIC);
 
         // Asynchronously handle the response from the server
         data.enqueue(new Callback<List<ViewBookingModel>>() {
