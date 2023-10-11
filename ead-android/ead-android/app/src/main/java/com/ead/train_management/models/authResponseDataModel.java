@@ -37,11 +37,6 @@ public class AuthResponseDataModel {
         this.id = id;
     }
 
-    // Create a getter method for accessing the 'nic' field.
-    public String getNic() {
-        return nic;
-    }
-
     // Create a setter method to update the 'nic' field.
     public void setNic(String nic) {
         this.nic = nic;
@@ -57,13 +52,18 @@ public class AuthResponseDataModel {
         this.password = password;
     }
 
+    // Create a setter method to update the 'role' field.
+    public void setRole(String role) {
+        this.role = role;
+    }
+
     // Create a getter method for accessing the 'role' field.
     public String getRole() {
         return role;
     }
 
-    // Create a setter method to update the 'role' field.
-    public void setRole(String role) {
-        this.role = role;
+    // Create a getter method for accessing the 'nic' field.
+    public String getNic() {
+        return nic;
     }
 }

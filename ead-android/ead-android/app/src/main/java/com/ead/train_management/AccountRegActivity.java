@@ -64,7 +64,7 @@ public class AccountRegActivity extends AppCompatActivity {
                     u.setData(ui);
 
                     // Make a Retrofit API call to register the user
-                    Call<TravelerHandlerModel> call = authService.Reg(u);
+                    Call<TravelerHandlerModel> call = authService.SignUpUser(u);
                     call.enqueue(new Callback<TravelerHandlerModel>() {
                         @Override
                         public void onResponse(Call<TravelerHandlerModel> call, Response<TravelerHandlerModel> response) {

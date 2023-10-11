@@ -64,14 +64,14 @@ public class AppLaunchActivity extends AppCompatActivity {
                                 AuthResponseDataModel userResponse = response.body();
                                 if (userResponse.getRole().equals("traveler")) {
                                     // If the user is a traveler, retrieve user profile
-                                    Call<TravelerHandlerModel> data = authService.getUserProfile(userResponse.getNic());
+                                    Call<TravelerHandlerModel> data = authService.fetchUserDetails(userResponse.getNic());
 
                                     data.enqueue(new Callback<TravelerHandlerModel>() {
                                         @Override
                                         public void onResponse(Call<TravelerHandlerModel> call1, Response<TravelerHandlerModel> response1) {
                                             if (response1.isSuccessful() && response1.body() != null) {
                                                 TravelerHandlerModel res = response1.body();
-                                                if (res.isAcc()) {
+                                                if (res.accountStatus()) {
                                                     // If the account is active, insert user data into the database
                                                     ContentValues values = new ContentValues();
                                                     values.put("nic", userResponse.getNic());

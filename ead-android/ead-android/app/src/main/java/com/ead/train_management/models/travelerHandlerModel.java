@@ -104,12 +104,12 @@ public class TravelerHandlerModel {
      }
 
      // Getter method for accessing the 'accStatus' field.
-     public boolean isAcc() {
+     public boolean accountStatus() {
           return acc;
      }
 
      // Setter method to update the 'accStatus' field.
-     public void setAcc(boolean acc) {
+     public void updateStatus(boolean acc) {
           this.acc = acc;
      }
 }

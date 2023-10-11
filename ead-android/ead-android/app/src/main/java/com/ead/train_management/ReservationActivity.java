@@ -115,7 +115,7 @@ public class ReservationActivity extends AppCompatActivity {
         }
 
         // Create a Retrofit call to fetch train data
-        Call<List<TravelModel>> data = reservationService.getTrain();
+        Call<List<TravelModel>> data = reservationService.fetchTrainData();
 
         // Asynchronously handle the response from the server
         data.enqueue(new Callback<List<TravelModel>>() {
@@ -169,7 +169,7 @@ public class ReservationActivity extends AppCompatActivity {
                     u.setEmail(email.getText().toString());
                     u.setName(name.getText().toString());
                     u.setPassno(Integer.parseInt(num.getText().toString()));
-                    Call<String> call = reservationService.createBooking(u);
+                    Call<String> call = reservationService.makeReservation(u);
 
                     // Asynchronously handle the response from the server
                     call.enqueue(new Callback<String>() {

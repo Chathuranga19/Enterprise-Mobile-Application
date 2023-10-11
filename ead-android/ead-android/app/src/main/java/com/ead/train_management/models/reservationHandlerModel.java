@@ -14,12 +14,12 @@ public class ReservationHandlerModel {
     private boolean acc;
 
     // Create a getter method for accessing the 'isCancelled' field.
-    public boolean isAcc() {
+    public boolean accountStatus() {
         return acc;
     }
 
     // Create a setter method to update the 'isCancelled' field.
-    public void setAcc(boolean acc) {
+    public void updateStatus(boolean acc) {
 
         this.acc = acc;
     }

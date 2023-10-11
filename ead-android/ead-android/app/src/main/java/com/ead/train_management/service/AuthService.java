@@ -18,25 +18,25 @@ import retrofit2.http.Path;
  */
 public interface AuthService {
 
+    // Register new user service
+    @POST("api/TravelerProfile")
+    Call<TravelerHandlerModel> SignUpUser(@Body UserManagementModel u);
+
+    // Update user profile service
+    @POST("api/TravelerProfile/") 
+    Call<TravelerHandlerModel> ModifyUserDetails(@Body TravelerHandlerModel u);
+
     // Login service
     @POST("Login")
     Call<AuthResponseDataModel> Login(@Body UserAuthModel lg);
 
     // Get user profile service
     @GET("api/TravelerProfile/{id}")
-    Call<TravelerHandlerModel> getUserProfile(@Path("id") String nic);
-
-    // Register new user service
-    @POST("api/TravelerProfile")
-    Call<TravelerHandlerModel> Reg(@Body UserManagementModel u);
-
-    // Update user profile service
-    @POST("api/TravelerProfile/") 
-    Call<TravelerHandlerModel> Update(@Body TravelerHandlerModel u);
+    Call<TravelerHandlerModel> fetchUserDetails(@Path("id") String nic);
 
     // Disable user account service
     @PUT("api/TravelerProfile/{id}")
-    Call<TravelerHandlerModel> Dis(@Path("id") String nic, @Body AccStatusModel db);
+    Call<TravelerHandlerModel> UserDisable(@Path("id") String nic, @Body AccStatusModel db);
 }
 
 

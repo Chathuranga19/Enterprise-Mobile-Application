@@ -19,19 +19,20 @@ import retrofit2.http.Path;
  */
 public interface ReservationService {
 
+    // Get list of available trains
+    @GET("api/Train")
+    Call<List<TravelModel>> fetchTrainData();
+
     // Get booking details for a user
     @GET("api/Reservation/{id}")
-    Call<List<ViewBookingModel>> getBooking(@Path("id") String nic);
-
-    // Create a new booking
-    @POST("api/Reservation")
-    Call<String> createBooking(@Body ReservationModel u);
+    Call<List<ViewBookingModel>> reservationFetcher(@Path("id") String nic);
 
     // Remove a booking
     @PUT("api/Reservation/{id}")
-    Call<String> removeBooking(@Path("id") String id ,@Body ReservationHandlerModel db);
+    Call<String> deleteReservation(@Path("id") String id ,@Body ReservationHandlerModel db);
 
-    // Get list of available trains
-    @GET("api/Train")
-    Call<List<TravelModel>> getTrain();
+    // Create a new booking
+    @POST("api/Reservation")
+    Call<String> makeReservation(@Body ReservationModel u);
+
 }

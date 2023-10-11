@@ -66,36 +66,6 @@ public class UserManagementModel {
         return nic;
     }
 
-    // Setter for Nic
-    public void setNic(String nic) {
-        this.nic = nic;
-    }
-
-    // Getter for FirstName
-    public String getFname() {
-        return fname;
-    }
-
-    // Setter for FirstName
-    public void setFname(String fname) {
-        this.fname = fname;
-    }
-
-    // Getter for LastName
-    public String getLname() {
-        return lname;
-    }
-
-    // Setter for LastName
-    public void setLname(String lname) {
-        this.lname = lname;
-    }
-
-    // Getter for PhoneNumber
-    public String getPhone() {
-        return phone;
-    }
-
     // Setter for PhoneNumber
     public void setPhone(String phone) {
         this.phone = phone;
@@ -120,4 +90,36 @@ public class UserManagementModel {
     public void setData(UserInfo data) {
         this.data = data;
     }
+
+    // Setter for Nic
+    public void setNic(String nic) {
+        this.nic = nic;
+    }
+
+    // Getter for FirstName
+    public String getFname() {
+        return fname;
+    }
+
+    // Setter for LastName
+    public void setLname(String lname) {
+        this.lname = lname;
+    }
+
+    // Getter for PhoneNumber
+    public String getPhone() {
+        return phone;
+    }
+
+    // Setter for FirstName
+    public void setFname(String fname) {
+        this.fname = fname;
+    }
+
+    // Getter for LastName
+    public String getLname() {
+        return lname;
+    }
+
+
 }

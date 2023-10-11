@@ -7,39 +7,39 @@ import com.google.gson.annotations.SerializedName;
 public class UserAuthModel {
     @SerializedName("Nic") // Nic field serialization
     @Expose
-    private String nic;
+    private String UserNIC;
 
     @SerializedName("Password") // Password field serialization
     @Expose
-    private String password;
+    private String UserPassword;
 
     // Default constructor
     public UserAuthModel() {
     }
 
     // Constructor with parameters
-    public UserAuthModel(String nic, String password) {
-        this.nic = nic;
-        this.password = password;
+    public UserAuthModel(String UserNIC, String UserPassword) {
+        this.UserNIC = UserNIC;
+        this.UserPassword = UserPassword;
     }
 
     // Getter for Nic
     public String getNic() {
-        return nic;
+        return UserNIC;
     }
 
     // Setter for Nic
-    public void setNic(String nic) {
-        this.nic = nic;
+    public void setNic(String UserNIC) {
+        this.UserNIC = UserNIC;
     }
 
     // Getter for Password
     public String getPassword() {
-        return password;
+        return UserPassword;
     }
 
     // Setter for Password
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPassword(String UserPassword) {
+        this.UserPassword = UserPassword;
     }
 }

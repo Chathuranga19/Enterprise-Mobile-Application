@@ -48,9 +48,9 @@ public class BookingListAdapter extends RecyclerView.Adapter<BookingListAdapter.
         holder.buttonDelete.setOnClickListener(v -> {
             String itemIdToDelete = item.getId();
             ReservationHandlerModel d = new ReservationHandlerModel();
-            d.setAcc(true);
+            d.updateStatus(true);
             Log.d("abcd", itemIdToDelete);
-            Call<String> data = bgService.removeBooking( item.getId(),d);
+            Call<String> data = bgService.deleteReservation( item.getId(),d);
 
             data.enqueue(new Callback<String>() {
                 @Override

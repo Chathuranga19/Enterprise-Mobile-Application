@@ -94,7 +94,7 @@ public class ReservationModel {
      }
 
      // Getter method for accessing the 'TravelModel' field.
-     public String getTrain() {
+     public String fetchTrainData() {
           return train;
      }
 

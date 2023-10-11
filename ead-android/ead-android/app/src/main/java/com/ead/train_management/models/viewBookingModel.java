@@ -45,6 +45,15 @@ public class ViewBookingModel {
         return id;
     }
 
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -71,13 +80,5 @@ public class ViewBookingModel {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
     }
 }

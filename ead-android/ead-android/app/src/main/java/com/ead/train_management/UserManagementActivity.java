@@ -110,7 +110,7 @@ public class UserManagementActivity extends AppCompatActivity {
         }
 
         // Create a Retrofit call to fetch user profile data
-        Call<TravelerHandlerModel> data = authService.getUserProfile(userNIC);
+        Call<TravelerHandlerModel> data = authService.fetchUserDetails(userNIC);
 
         // Asynchronously handle the response from the server
         data.enqueue(new Callback<TravelerHandlerModel>() {
@@ -146,7 +146,7 @@ public class UserManagementActivity extends AppCompatActivity {
                 } else {
                     // Create a TravelerHandlerModel object with updated user data
                     TravelerHandlerModel u = new TravelerHandlerModel();
-                    u.setAcc(true);
+                    u.updateStatus(true);
                     u.setNic(userNIC);
                     u.setPhone(phone.getText().toString());
                     u.setFname(fname.getText().toString());
@@ -154,7 +154,7 @@ public class UserManagementActivity extends AppCompatActivity {
                     u.setDate(date.getText().toString());
                     u.setId(userID);
                     // Create a Retrofit call to update user profile
-                    Call<TravelerHandlerModel> call = authService.Update(u);
+                    Call<TravelerHandlerModel> call = authService.ModifyUserDetails(u);
 
                     // Asynchronously handle the response from the server
                     call.enqueue(new Callback<TravelerHandlerModel>() {
@@ -194,9 +194,9 @@ public class UserManagementActivity extends AppCompatActivity {
     // Handle the disable button click
     public void Disable(View view) {
         AccStatusModel d = new AccStatusModel();
-        d.setAcc(false);
+        d.updateStatus(false);
         // Create a Retrofit call to disable the user account
-        Call<TravelerHandlerModel> data = authService.Dis(userNIC, d);
+        Call<TravelerHandlerModel> data = authService.UserDisable(userNIC, d);
 
         // Asynchronously handle the response from the server
         data.enqueue(new Callback<TravelerHandlerModel>() {

@@ -98,7 +98,7 @@ public class BookingListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Create a Retrofit call to fetch booking data for the user's NIC
-        Call<List<ViewBookingModel>> data = reservationService.getBooking(userNIC);
+        Call<List<ViewBookingModel>> data = reservationService.reservationFetcher(userNIC);
 
         // Asynchronously handle the response from the server
         data.enqueue(new Callback<List<ViewBookingModel>>() {
