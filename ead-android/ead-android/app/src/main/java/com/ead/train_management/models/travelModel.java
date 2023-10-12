@@ -11,6 +11,11 @@ public class TravelModel {
     @SerializedName("id")
     @Expose
     private String trainID;
+    private String trainName;
+
+    public String getTrainName() {
+        return trainName;
+    }
 
     // Getter method for accessing the 'id' field.
     public String trainIDFetcher() {
