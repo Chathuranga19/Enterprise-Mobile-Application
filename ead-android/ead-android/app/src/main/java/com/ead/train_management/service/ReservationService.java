@@ -9,6 +9,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -28,8 +29,8 @@ public interface ReservationService {
     Call<List<ViewBookingModel>> reservationFetcher(@Path("id") String nic);
 
     // Remove a booking
-    @PUT("api/Reservation/{id}")
-    Call<String> deleteReservation(@Path("id") String id ,@Body ReservationHandlerModel db);
+    @DELETE("api/Reservation/{id}")
+    Call<String> deleteReservation(@Path("id") String id );
 
     // Create a new booking
     @POST("api/Reservation")

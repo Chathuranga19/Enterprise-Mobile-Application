@@ -29,7 +29,7 @@ public class ReservationModel {
      private String  phone;
 
      // Use the '@SerializedName' annotation to specify the JSON key for the 'TravelModel' field.
-     @SerializedName("TravelModel")
+     @SerializedName("train")
      @Expose
      private String  train;
 

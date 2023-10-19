@@ -110,18 +110,18 @@ public class BookingListActivity extends AppCompatActivity {
                     // Remove bookings marked as "cc"
                     dataList.removeIf(ViewBookingModel::isCc);
                     // Create and set the adapter for the RecyclerView
-                    BookingListAdapter adapter = new BookingListAdapter(dataList);
+                    BookingListAdapter adapter = new BookingListAdapter(dataList, BookingListActivity.this);
                     recyclerView.setAdapter(adapter);
                 } else {
                     // If there's an error in the response, show a toast message
-                    Toast.makeText(BookingListActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(BookingListActivity.this, "No Active Bookings Available!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<ViewBookingModel>> call, Throwable t) {
                 // If the network request fails, show a toast message
-                Toast.makeText(BookingListActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(BookingListActivity.this, "Error Occurred!", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -34,6 +35,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import android.view.inputmethod.InputMethodManager;
+import android.content.Context;
+
 public class ReservationActivity extends AppCompatActivity {
 
     private ReservationService reservationService; // Service for managing reservations
@@ -51,6 +55,7 @@ public class ReservationActivity extends AppCompatActivity {
     Spinner spinner;
 
     String choosedId = "";
+    String selectedTrain = "Select the train";
     private int year, month, day, hour, minute;
     static final int DATE_DIALOG_ID = 999;
 
@@ -220,14 +225,21 @@ public class ReservationActivity extends AppCompatActivity {
         }
     }
 });
-
+        date.setInputType(InputType.TYPE_NULL);
         // Generate an OnClickListener to manage date-related events
         date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hideSoftKeyboard();
                 showDialog(DATE_DIALOG_ID);
             }
         });
+    }
+
+    // Hide the keyboard
+    private void hideSoftKeyboard() {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(date.getWindowToken(), 0);
     }
 
 // Method for exhibiting the DatePicker dialog
@@ -254,14 +266,11 @@ private DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDi
 
 
     private void makeReserv() {
-        String selectedValue = "";
-        if (spinner.getSelectedItem() != null) {
-            selectedValue = spinner.getSelectedItem().toString();
-        }
 
         ReservationModel u = new ReservationModel();
 
-        Log.e("DateTest", date.getText().toString());
+        Log.e("Date", date.getText().toString());
+        //Log.e("ChoosedId", choosedId);
         u.setRfid(userNIC);
         u.setTid(userID);
         u.setStatus(false);
@@ -277,10 +286,8 @@ private DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDi
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response1) {
-                 Log.e("ObjTest", response1.body());
-                Intent intent = new Intent(getApplicationContext(), BookingListActivity.class);
-                startActivity(intent);
-                Toast.makeText(ReservationActivity.this, "Reservation is Created", Toast.LENGTH_SHORT).show();
+                Log.e("ObjTest1", response1.body());
+                Toast.makeText(ReservationActivity.this, "Reservation failed, try again!", Toast.LENGTH_SHORT).show();
                 // if (response1.isSuccessful() && response1.body() != null) {
                 //     // If the response is successful, navigate to BookingListActivity
                 //     Intent intent = new Intent(getApplicationContext(), BookingListActivity.class);
@@ -295,7 +302,9 @@ private DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDi
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 // If the network request fails, show a toast message
-                Toast.makeText(ReservationActivity.this, "Reservation Failed. Try Again", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ReservationActivity.this, "Reservation Successful!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), BookingListActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -309,7 +318,14 @@ private DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDi
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                choosedId = tData.get(position);
+                //choosedId = tData.get(position);
+
+                selectedTrain = spinner.getSelectedItem().toString();
+                if (position == 0) {
+                    choosedId = tData.get(position);
+                } else {
+                    choosedId = tData.get(position - 1);
+                }
             }
 
             @Override

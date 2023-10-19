@@ -27,6 +27,14 @@ public class ViewBookingModel {
     @Expose
     private String date; // Date of the reservation.
 
+    @SerializedName("isCancelled")
+    @Expose
+    private boolean isCancelled; // Indicates if the booking is cancelled or not.
+
+    @SerializedName("isCc")
+    @Expose
+    private boolean cc;
+
     public boolean isCc() {
         return cc;
     }
@@ -34,10 +42,6 @@ public class ViewBookingModel {
     public void setCc(boolean cc) {
         this.cc = cc;
     }
-
-    @SerializedName("isCancelled")
-    @Expose
-    private boolean cc; // Indicates if the booking is cancelled or not.
 
     // Getter and setter methods for the class members.
 
@@ -52,6 +56,14 @@ public class ViewBookingModel {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public boolean isCancelled() {
+        return isCancelled;
+    }
+
+     public void setCancelled(boolean cancelled) {
+        isCancelled = cancelled;
     }
 
     public void setId(String id) {
